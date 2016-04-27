@@ -1,0 +1,28 @@
+text{
+font-size: 10px;
+}
+
+g > text.active{
+font-size: 30px;
+}
+
+ellipse{
+fill: none;
+stroke: gray;
+stroke-width: 0.5px;
+}
+
+ellipse.active {
+fill:red;
+opacity: .35;
+stroke: orange;
+stroke-width: 1px;
+}
+
+ellipse.inactive{
+fill: none;
+stroke: grey;
+stroke-width: 0.5px;
+}
+
+

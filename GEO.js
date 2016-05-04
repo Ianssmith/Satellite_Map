@@ -32,6 +32,9 @@ var maxsemiminorA = d3.max(incomingData, function(el) {return el.semiminorA;});
 var minefromcenter = d3.min(incomingData, function(el) {return el.Efromcenter;});
 var maxefromcenter = d3.max(incomingData, function(el) {return el.Efromcenter;});
 
+var earliest = d3.min(incomingData, function(el) {return el.launch_year;});
+var latest = d3.max(incomingData, function(el) {return el.launch_year;});
+
 var earthradE = 6371/100
 var earthradN = 6357/100 
 
@@ -44,7 +47,7 @@ var radScale = d3.scale.linear().domain([minperigee, maxapogee]).range([minperig
 var rxScale = d3.scale.linear().domain([minsemimajorA, maxsemimajorA]).range([minsemimajorA/100, maxsemimajorA/100]);
 var ryScale = d3.scale.linear().domain([minsemiminorA, maxsemiminorA]).range([minsemiminorA/100, maxsemiminorA/100]);
 var efromcenterScale = d3.scale.linear().domain([minefromcenter, maxefromcenter]).range([(width/2 - minefromcenter/100), width/2 - maxefromcenter/100]);
-
+var yearScale = d3.scale.linear().domain([earliest, latest]).range([0,41000]);
 
 var Sat = d3.select("svg")
     .selectAll("g")
@@ -62,8 +65,8 @@ var geoG = d3.selectAll("g.satellites");
   .attr("rx", 0)
   .attr("ry", 0)
   .transition()
-  .delay(function(d,i) {return i * 100})
-  .duration(1000)
+  .delay(function(d,i) {return yearScale(d.launch_year)})
+  .duration(5000)
   .attr("rx", function(d) {return rxScale(d.semimajorA);})
   .attr("ry", function(d) {return ryScale(d.semiminorA);})
   //.attr("cx", function(d) {return inclinationScale(d.inclination);})
@@ -71,21 +74,28 @@ var geoG = d3.selectAll("g.satellites");
   .style("fill", "transparent")//function(d) {return colorScale(d.inclination);})
   .style("stroke", "#d46a6a")
   .style("stroke-width", "0.5px")
-  .style("opacity", 0.5);
+  .style("opacity", 0.2);
 
 geoG.append("line")
+  .attr("x1", function(d) {return efromcenterScale(d.Efromcenter)/100;}) 
+  .attr("y1", 500/100)
   .attr("x2", function(d) {return efromcenterScale(d.Efromcenter)/100;}) 
   .attr("y2", 500/100)
   .transition()
-  .delay(function(d,i) {return i * 100})
-  .duration(1000)
-  .attr("x1", function(d) {return rxScale(d.cartX);})
-  .attr("y1", function(d) {return ryScale(d.cartY);})
+  .delay(function(d,i) {return yearScale(d.launch_year)})
+  .duration(5000)
+  .attr("x2", function(d) {return rxScale(d.cartX);})
+  .attr("y2", function(d) {return ryScale(d.cartY);})
   .style("stroke", "red")
   .style("stroke-width", "0.5px")
   .style("opacity", 0.5);
 
 geoG.append("circle")
+  .attr("cx", function(d) {return efromcenterScale(d.Efromcenter)/100;}) 
+  .attr("cy", 500/100)
+  .transition()
+  .delay(function(d,i) {return yearScale(d.launch_year)})
+  .duration(5000)
   .attr("cx", function(d) {return rxScale(d.cartX);})
   .attr("cy", function(d) {return ryScale(d.cartY);})
   .attr("r", 2.5)//function(d) {return d.inclination;})

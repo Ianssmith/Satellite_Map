@@ -3,11 +3,6 @@ var height = 1000;
 var margin = 50;
 var fullangle = 2*Math.PI;
 
-/*
-	   arcs.append("svg:path")
-	   .attr("d", "M 500 500, l"+function (j){return j.radii;}+" "+function(p){return p.radians;}+
-	   "a" + function(k){return radScale(k.perigee_km);}+" "+function(t){return radScale(t.apogee_km);}+"0 1,1"+function (j){return j.radii;}+" "+function(p){return p.radians;})
-	 */
 
 data = d3.csv("GEO.csv", function(data) {viz(data);})
 
@@ -29,6 +24,14 @@ var maxsemimajorA = d3.max(incomingData, function(el) {return el.semimajorA;});
 var minsemiminorA = d3.min(incomingData, function(el) {return el.semiminorA;});
 var maxsemiminorA = d3.max(incomingData, function(el) {return el.semiminorA;});
 
+var rxmin = d3.min(incomingData, function(el) {return el.cartX;});
+var rxmax = d3.max(incomingData, function(el) {return el.cartX;});
+
+var rymin = d3.min(incomingData, function(el) {return el.cartY;});
+var rymax = d3.max(incomingData, function(el) {return el.cartY;});
+
+
+
 var minefromcenter = d3.min(incomingData, function(el) {return el.Efromcenter;});
 var maxefromcenter = d3.max(incomingData, function(el) {return el.Efromcenter;});
 
@@ -47,7 +50,10 @@ var radScale = d3.scale.linear().domain([minperigee, maxapogee]).range([minperig
 var rxScale = d3.scale.linear().domain([minsemimajorA, maxsemimajorA]).range([minsemimajorA/100, maxsemimajorA/100]);
 var ryScale = d3.scale.linear().domain([minsemiminorA, maxsemiminorA]).range([minsemiminorA/100, maxsemiminorA/100]);
 var efromcenterScale = d3.scale.linear().domain([minefromcenter, maxefromcenter]).range([(width/2 - minefromcenter/100), width/2 - maxefromcenter/100]);
+var reversecenterScale = d3.scale.linear().domain([minefromcenter, maxefromcenter]).range([(minefromcenter/100), maxefromcenter/100]);
 var yearScale = d3.scale.linear().domain([earliest, latest]).range([0,41000]);
+var cartxScale = d3.scale.linear().domain([rxmin, rxmax]).range([rxmin/100,rxmax/100]);
+var cartyScale = d3.scale.linear().domain([rymin, rymax]).range([rymin/100,rymax/100]);
 
 var Sat = d3.select("svg")
     .selectAll("g")
@@ -74,36 +80,40 @@ var geoG = d3.selectAll("g.satellites");
   .style("fill", "transparent")//function(d) {return colorScale(d.inclination);})
   .style("stroke", "#d46a6a")
   .style("stroke-width", "0.5px")
-  .style("opacity", 0.2);
+  .style("opacity", 0.5);
 
 geoG.append("line")
-  .attr("x1", function(d) {return efromcenterScale(d.Efromcenter)/100;}) 
-  .attr("y1", 500/100)
-  .attr("x2", function(d) {return efromcenterScale(d.Efromcenter)/100;}) 
+  .attr("x1", function(d) {return reversecenterScale(d.Efromcenter);}) 
+  //.attr("y1", 500/100)
+//  .attr("x1", 0)
+  .attr("y1", 0)
+  .attr("x2", function(d) {return reversecenterScale(d.Efromcenter);}) 
   .attr("y2", 500/100)
   .transition()
   .delay(function(d,i) {return yearScale(d.launch_year)})
   .duration(5000)
-  .attr("x2", function(d) {return rxScale(d.cartX);})
-  .attr("y2", function(d) {return ryScale(d.cartY);})
+  .attr("x2", function(d) {return cartxScale(d.cartX);})
+  .attr("y2", function(d) {return cartyScale(d.cartY);})
   .style("stroke", "red")
   .style("stroke-width", "0.5px")
   .style("opacity", 0.5);
 
 geoG.append("circle")
-  .attr("cx", function(d) {return efromcenterScale(d.Efromcenter)/100;}) 
-  .attr("cy", 500/100)
+  .attr("cx", function(d) {return reversecenterScale(d.Efromcenter);}) 
+//  .attr("cy", 500/100)
+//  .attr("cx", 0)
+  .attr("cy", 0)
   .transition()
   .delay(function(d,i) {return yearScale(d.launch_year)})
   .duration(5000)
-  .attr("cx", function(d) {return rxScale(d.cartX);})
-  .attr("cy", function(d) {return ryScale(d.cartY);})
-  .attr("r", 2.5)//function(d) {return d.inclination;})
+  .attr("cx", function(d) {return cartxScale(d.cartX);})
+  .attr("cy", function(d) {return cartyScale(d.cartY);})
+  .attr("r", 3)//function(d) {return d.inclination;})
   .style("stroke", "grey")
   .style("fill", "lightblue");
 
 
-d3.select("svg")
+var earth = d3.select("svg")
     .append("ellipse")
     .attr("rx", earthradE)
     .attr("ry", earthradN)
@@ -111,6 +121,8 @@ d3.select("svg")
     .attr("cy", height/2)
     .style("fill", "white")
     .style("stroke", "green")
+
+
 
 //geoG.append("text")
 //  .text(function(d) {return d.country + "-" + d.name;})

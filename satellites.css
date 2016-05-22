@@ -1,5 +1,12 @@
+body{
+    font-family: 'Inconsolata';
+}
 text{
 font-size: 10px;
+}
+
+p{
+width:75%;
 }
 
 g > text.active{
@@ -26,3 +33,43 @@ stroke-width: 0.5px;
 }
 
 
+  #table {
+    position:fixed;
+    left:20px;
+    top:200px;
+    z-index:1;
+    background: translucent;
+    border: 1px white solid;
+    box-shadow: -3px -3px 5px #888888;
+}
+  tr {
+    border: 1px gray solid;
+}
+  td {
+    font-size: 13px;
+}
+td.data {
+    font-weight: 900;
+  }
+tr.data {
+    font-weight: 900;
+  }
+
+li a{
+    border: 0.5px grey solid;
+    border-radius: 1px;
+    padding: 8px;
+    display:inline-block;
+    text-decoration:none;
+}
+
+li {
+    display:inline-block;
+    float:left;
+    padding:8px;
+
+}
+li a:hover {
+    background-color: #555;
+    color: white;
+}

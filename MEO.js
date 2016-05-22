@@ -1,4 +1,4 @@
-var width = 1000;
+var width = 1400;
 var height = 1000;
 var margin = 50;
 var fullangle = 2*Math.PI;
@@ -108,10 +108,30 @@ geoG.append("circle")
   .duration(5000)
   .attr("cx", function(d) {return cartxScale(d.cartX);})
   .attr("cy", function(d) {return cartyScale(d.cartY);})
-  .attr("r", 3)//function(d) {return d.inclination;})
+  .attr("r", 4)//function(d) {return d.inclination;})
   .style("stroke", "grey")
   .style("fill", "lightblue");
+/*
+var projection = d3.geo.orthographic()
+    .translate([width/2, height/2])
+    .clipAngle(90+1e-6)
+    .precision(.3);
 
+var earth = d3.geo.path()
+    .projection(earth);
+
+var graticule = d3.geo.graticule();
+
+d3.select("svg")
+    .append("earth")
+    .datum({type: "Sphere"})
+    .attr("d", earth)
+    .datum(graticule)
+    .attr("stroke", "green")
+    .attr("d", earth)
+    .datum({type: "LineString", coordinates: [[-180,0], [-90,0],[0,0], [90,0], [180,0]]})
+    .attr("d", earth);
+*/
 
 d3.select("svg")
     .append("ellipse")
@@ -154,12 +174,12 @@ d3.selectAll("g.satellites").select("ellipse").transition().duration(1000)
 };
 
 d3.text("table.html", function(data) {
-    d3.select("body").append("div").attr("id", "modal").html(data);
+    d3.select("body").append("div").attr("id", "table").html(data);
 });
 
-geoG.on("click", clickButton);
+geoG.on("mouseover", mouseHover);
 
-function clickButton(d){
+function mouseHover(d){
    d3.selectAll("td.data").data(d3.values(d))
       .html(function(p) {
          return p 

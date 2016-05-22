@@ -1,28 +1,30 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8" />
+  <meta charset="utf-8" />
 <script src="d3.v3.js" type="text/JavaScript"></script>
 <link href="satellites.css" type="text/css" rel="stylesheet"/>
+<link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 </head>
 <style>
 #vizcontainer {
 }
 </style>
 <body>
+<h1>Active Satellites Orbiting Earth</h1>
+<p>Starting in 1974 to 2015 all the satellites launched each year (here represented in seconds) "launch" from Earth to their orbits around the Earth.</p>
 <ul>
-<li><a href="oLEO.html">LEO Non-Polar Inclined, Polar, Equatorial, and Elliptical</a></li>
-<li><a href="MEO.html">MEO and Elliptical</a></li>
-<li><a href="#">GEO</a></li>
-<li><a href="sLEO.html">LEO Sun Syncronous</a></li>
+    <li><a href="#">All Satellites</a></li>
+    <li><a href="GEO.html">GEO</a></li>
+    <li><a href="sLEO.html">LEO Sun Syncronous</a></li>
+    <li><a href="oLEO.html">LEO </a></li>
+    <li><a href="MEO.html">MEO and Elliptical</a></li>
 </ul>
 <div id="vizcontainer">
-<svg style="width:1000px;height:1000px;border:1px lightgray solid;" />
+<svg style="width:1400px;height:1000px;" />
 </div>
-<div id="controls"/>
 </body>
 <footer>
-<script src="GEO.js" type="text/JavaScript"></script>
-
+<script src="all.js" type="text/JavaScript"></script>
 </footer>
 </html>

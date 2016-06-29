@@ -110,7 +110,7 @@ geoG.append("circle")
   .attr("cy", function(d) {return cartyScale(d.cartY);})
   .attr("r", 4)//function(d) {return d.inclination;})
   .style("stroke", "grey")
-  .style("fill", "lightblue");
+  .style("fill", "red");
 /*
 var projection = d3.geo.orthographic()
     .translate([width/2, height/2])
@@ -139,7 +139,7 @@ d3.select("svg")
     .attr("ry", earthradN)
     .attr("cx", width/2)
     .attr("cy", height/2)
-    .style("fill", "white")
+    .style("fill", "lightblue")
     .style("stroke", "green")
 
 //geoG.append("text")

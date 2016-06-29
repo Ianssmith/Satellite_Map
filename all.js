@@ -111,7 +111,7 @@ geoG.append("circle")
   .attr("cy", function(d) {return cartyScale(d.cartY);})
   .attr("r", 4)//function(d) {return d.inclination;})
   .style("stroke", "grey")
-  .style("fill", "lightblue");
+  .style("fill", "red");
 /*
 var projection = d3.geo.orthographic()
     .translate([width/2, height/2])
@@ -134,14 +134,54 @@ d3.select("svg")
     .attr("d", earth);
 */
 
+var projection = d3.geo.orthographic()
+    .scale(earthradE - 2)
+    .translate([width/2, height/2])
+    .clipAngle(90)
+    .rotate([10,0,0]);
+ 
+ 
+var canvas = d3.select("svg").append("canvas")
+    .attr("width", width)
+    .attr("height", height);
+console.info(d3.select("svg"));
+var path = d3.geo.path()
+    .projection(projection);
+ 
+d3.json("./world-110m.json", function(error, world) {
+  var land = topojson.object(world, world.objects.land),
+      globe = {type: "Sphere"};
+      context = canvas.node().getContext("2d");
+   
+      context.strokeStyle = '#766951';
+       
+      context.fillStyle = '#d8ffff';
+      context.beginPath(), path.context(context)(globe), context.fill(), context.stroke();
+ 
+      context.fillStyle = '#d7c7ad';
+      context.beginPath(), path.context(context)(land), context.fill(), context.stroke();
+});
+
+///^^^
+
 d3.select("svg")
     .append("ellipse")
     .attr("rx", earthradE)
     .attr("ry", earthradN)
     .attr("cx", width/2)
     .attr("cy", height/2)
-    .style("fill", "white")
+    .style("fill", "lightblue")
     .style("stroke", "green")
+
+geoG.append("text")
+  .text(function(d) {return d.launch_year;}) //{return d.country + "-" + d.launch_year;})
+  .attr("x", function(d) {return reversecenterScale(d.Efromcenter);}) 
+  .attr("y", 0)
+  .transition()
+  .delay(function(d,i) {return yearScale(d.launch_year)})
+  .duration(5000)
+  .attr("x", function(d) {return cartxScale(d.cartX);})
+  .attr("y", function(d) {return cartyScale(d.cartY);})
 
 //geoG.append("text")
 //  .text(function(d) {return d.country + "-" + d.name;})

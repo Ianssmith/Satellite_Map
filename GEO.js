@@ -3,12 +3,16 @@ var height = 1000;
 var margin = 50;
 var fullangle = 2*Math.PI;
 
+var years = [];
+for(i=1974;i<=2015;i++){
+    years.push(i);
+};
+console.log(years);
 
 data = d3.csv("GEO.csv", function(data) {viz(data);})
 
 
  function viz(incomingData){
-
 
 var maxInclination = d3.max(incomingData, function(el) {return el.inclination;});
 var maxLongitude = d3.max(incomingData, function(el) {return el.longitude;});
@@ -98,7 +102,7 @@ geoG.append("line")
   .style("stroke-width", "0.5px")
   .style("opacity", 0.5);
 
-geoG.append("circle")
+var SS = geoG.append("circle")
   .attr("cx", function(d) {return reversecenterScale(d.Efromcenter);}) 
 //  .attr("cy", 500/100)
 //  .attr("cx", 0)
@@ -110,7 +114,8 @@ geoG.append("circle")
   .attr("cy", function(d) {return cartyScale(d.cartY);})
   .attr("r", 4)//function(d) {return d.inclination;})
   .style("stroke", "grey")
-  .style("fill", "lightblue");
+  .style("fill", "red");
+
 
 
 var earth = d3.select("svg")
@@ -119,15 +124,37 @@ var earth = d3.select("svg")
     .attr("ry", earthradN)
     .attr("cx", width/2)
     .attr("cy", height/2)
-    .style("fill", "white")
+    .style("fill", "lightblue")
     .style("stroke", "green")
 
+//d3.select("svg")
+//.append("line")
+//.attr("x1", width/2)
+//.attr("y1", height/2-earthradN)
+//.attr("x2", width/2)
+//.attr("y2", height/2+earthradN)
+//.style("stroke", "green")
+//.style("stroke-width", "0.5px")
 
 
 //geoG.append("text")
-//  .text(function(d) {return d.country + "-" + d.name;})
+//.attr("x", 475)
+//.attr("y", 90)
+//.text(function(d){return d.country + "-" + d.launch_year;})
+
+/*
+geoG.append("text")
+  .text(function(d) {return d.launch_year;}) //{return d.country + "-" + d.launch_year;})
+  .attr("x", function(d) {return reversecenterScale(d.Efromcenter);}) 
+  .attr("y", 0)
+  .transition()
+  .delay(function(d,i) {return yearScale(d.launch_year)})
+  .duration(5000)
+  .attr("x", function(d) {return cartxScale(d.cartX);})
+  .attr("y", function(d) {return cartyScale(d.cartY);})
 //  .attr("y", function(d) {return ryScale(d.cartY);})
 //  .attr("x", function(d) {return rxScale(d.cartX);})
+*/
 
 var dataKeys = d3.keys(incomingData[0]).filter(function(el){
     return el == "power_watts" || el == "inclination";
@@ -162,6 +189,7 @@ d3.text("table.html", function(data) {
 geoG.on("mouseover", mouseHover);
 
 function mouseHover(d){
+//SS.style("fill", "red")
    d3.selectAll("td.data").data(d3.values(d))
       .html(function(p) {
          return p 

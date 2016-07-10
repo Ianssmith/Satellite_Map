@@ -191,18 +191,18 @@ function viz(incomingData){
 				});
 	};
 
-	d3.text("table.html", function(data) {
-			d3.select("body").append("div").attr("id", "table").html(data);
-			});
+	//d3.text("table.html", function(data) {
+	//		d3.select("body").append("div").attr("id", "table").html(data);
+	//		});
 
-	geoG.on("mouseover", mouseHover);
+	//geoG.on("mouseover", mouseHover);
 
-	function mouseHover(d){
-		d3.selectAll("td.data").data(d3.values(d))
-			.html(function(p) {
-					return p 
-					})
-	}
+	//function mouseHover(d){
+	//	d3.selectAll("td.data").data(d3.values(d))
+	//		.html(function(p) {
+	//				return p 
+	//				})
+	//}
 
 
 }

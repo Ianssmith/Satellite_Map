@@ -9,7 +9,7 @@ for(i=1974;i<=2015;i++){
 };
 console.log(years);
 
-data = d3.csv("GEO.csv", function(data) {viz(data);})
+d3.csv("GEO.csv", function(data) {viz(data);})
 
 
 function viz(incomingData){

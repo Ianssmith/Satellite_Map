@@ -4,7 +4,7 @@ var margin = 50;
 var fullangle = 2*Math.PI;
 
 
-data = d3.csv("LEO_sun.csv", function(data) {viz(data);})
+d3.csv("LEO_sun.csv", function(data) {viz(data);})
 
 
 function viz(incomingData){

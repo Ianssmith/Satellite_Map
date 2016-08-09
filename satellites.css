@@ -1,11 +1,24 @@
-body{
-    font-family: 'Inconsolata';
+@import url(https://fonts.googleapis.com/css?family=Prompt:100);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Mono:400,100);
+html{
+    background-color: black;
+    font-family: 'Roboto Mono';
+    font-weight: 100;
 }
 text{
 font-size: 10px;
 }
 
+h1{
+  font-family: 'Prompt';
+  font-weight: 100;
+  color:white;
+    background-color: 'black';
+    }
+
 p{
+  color:white;
+    background-color: 'black';
 width:75%;
 }
 
@@ -56,6 +69,7 @@ tr.data {
   }
 
 li a{
+    color:white;
     border: 0.5px grey solid;
     border-radius: 1px;
     padding: 8px;

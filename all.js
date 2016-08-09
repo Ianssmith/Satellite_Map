@@ -5,7 +5,7 @@ var margin = 50;
 var fullangle = 2*Math.PI;
 
 
-data = d3.csv("CSatellites.csv", function(data) {viz(data);})
+d3.csv("CSatellites.csv", function(data) {viz(data);})
 
 
 function viz(incomingData){
@@ -56,6 +56,170 @@ function viz(incomingData){
 	var cartxScale = d3.scale.linear().domain([rxmin, rxmax]).range([rxmin/300,rxmax/300]);
 	var cartyScale = d3.scale.linear().domain([rymin, rymax]).range([rymin/300,rymax/300]);
 
+////// CALCULATING ORBITAL PATHS vVVV
+
+var satMatrix = {
+  sec_per_longdegree: [],
+  meanmotion: [],
+  eccentricity: [],
+  semimajorA: [],
+  semiminorA: []
+};
+
+incomingData.map(function(d){
+  satMatrix.sec_per_longdegree.push(d.sec_per_longdegree);
+  satMatrix.meanmotion.push(d.meanmotion); 
+  satMatrix.eccentricity.push(d.eccentricity);
+  satMatrix.semimajorA.push(d.semimajorA);
+  satMatrix.semiminorA.push(d.semiminorA);
+  });
+
+
+
+satMatrix.degrees = [];
+satMatrix.timeTillX = [];
+satMatrix.meanAnom = [];
+satMatrix.eccentricAnom = [];
+satMatrix.trueAnom = [];
+satMatrix.adjustedAnom = [];
+satMatrix.cartesianX = [];
+satMatrix.cartesianY = [];
+incomingData.degrees = [];
+
+for(var i=1;i<=360;i++){
+	satMatrix.degrees.push(i);
+	incomingData.degrees.push(i);
+};
+console.log(incomingData.degrees);
+//console.log(satellites.degrees);
+
+satMatrix.satOrbits = []
+
+for(var i=0;i<=1380;i++){
+	satMatrix.satOrbits.push(satMatrix.degrees);
+}
+
+//VVVVVV  calculating time until give degree of orbit (in seconds) VVVVVV
+    var i =0;
+    var splitter = [];
+
+    satMatrix.satOrbits.forEach(function(satellite){
+      satMatrix.timeTillX.push(splitter);
+      splitter = [];
+      satellite.forEach(function(degree){
+        splitter.push(degree*satMatrix.sec_per_longdegree[i]);
+        })
+        i++;
+      })
+satMatrix.timeTillX.shift();
+//console.log(satMatrix.timeTillX);
+
+//VVVVV   calculating mean Anomaly for each position VVVVV
+    var i =0;
+    var splitter = [];
+
+    satMatrix.timeTillX.forEach(function(satellite){
+      satMatrix.meanAnom.push(splitter);
+      splitter = [];
+      satellite.forEach(function(degree){
+        splitter.push(degree*satMatrix.meanmotion[i]);
+        })
+        i++;
+      })
+      satMatrix.meanAnom.shift();
+
+      //console.log(satMatrix.meanAnom);
+
+// VVVVV calculating eccentric Anomaly VVVVV
+    var i =0;
+    var splitter = [];
+    satMatrix.meanAnom.forEach(function(satellite){
+      satMatrix.eccentricAnom.push(splitter);
+      splitter = [];
+      satellite.forEach(function(mA){
+        splitter.push(mA - ((mA-(satMatrix.eccentricity[i]*Math.sin(mA))-mA)/(1-satMatrix.eccentricity[i]*Math.cos(mA))));
+        })
+        i++;
+      })
+satMatrix.eccentricAnom.shift();
+      //console.log(satMatrix.eccentricAnom);
+
+// VVVVVV true Anomaly VVVVVV
+    var i =0;
+    var splitter = [];
+    satMatrix.eccentricAnom.forEach(function(satellite){
+      satMatrix.trueAnom.push(splitter);
+      splitter = [];
+      satellite.forEach(function(eA){
+        splitter.push(Math.acos((Math.cos(eA)-satMatrix.eccentricity[i])/(1 - (satMatrix.eccentricity[i]*Math.cos(eA)))));
+        })
+        i++;
+      })
+
+      satMatrix.trueAnom.shift();
+      //console.log(satMatrix.trueAnom);
+
+// VVVVVV   true Anomaly adjusted for 360degrees  VVVVVV
+    var i =0;
+    var splitter = [];
+    satMatrix.trueAnom.forEach(function(satellite){
+      satMatrix.adjustedAnom.push(splitter);
+      splitter = [];
+      satellite.forEach(function(degree){
+        splitter.push(degree*2);
+        })
+        i++;
+      })
+
+      satMatrix.adjustedAnom.shift();
+      //console.log(satMatrix.adjustedAnom);
+
+//  VVVVV  converting to cartesian X coords  VVVVV
+    var i =0;
+    var splitter = [];
+    satMatrix.adjustedAnom.forEach(function(satellite){
+      satMatrix.cartesianX.push(splitter);
+      splitter = [];
+      satellite.forEach(function(tA){
+        splitter.push(Math.cos(tA)*satMatrix.semimajorA[i]);
+        })
+        i++;
+      })
+
+satMatrix.cartesianX.shift();
+//console.log(satMatrix.cartesianX);
+
+// VVVVV  converting to cartesian Y coords VVVVV
+    var i =0;
+    var splitter = [];
+    satMatrix.adjustedAnom.forEach(function(satellite){
+      satMatrix.cartesianY.push(splitter);
+      splitter = [];
+      satellite.forEach(function(tA){
+        splitter.push(Math.sin(tA)*satMatrix.semiminorA[i]);
+        })
+        i++;
+      })
+
+satMatrix.cartesianY.shift();
+
+
+console.log(satMatrix.cartesianX);
+console.log(satMatrix.cartesianY);
+
+
+	var coordxmin = d3.min(satMatrix, function(el) {return el.cartesianX;});
+	var coordxmax = d3.max(satMatrix, function(el) {return el.cartesianX;});
+
+	var coordymin = d3.min(satMatrix, function(el) {return el.cartesianY;});
+	var coordymax = d3.max(satMatrix, function(el) {return el.cartesianY;});
+
+	var coordxScale = d3.scale.linear().domain([coordxmin, coordxmax]).range([coordxmin/300,coordxmax/300]);
+	var coordyScale = d3.scale.linear().domain([coordymin, coordymax]).range([coordymin/300,coordymax/300]);
+
+
+///// ^^^^^^
+
 	var Sat = d3.select("svg")
     .style("background", "black")
 		.selectAll("g")
@@ -85,6 +249,28 @@ function viz(incomingData){
 		.style("stroke-width", "0.25px")
 		.style("opacity", 0.5);
 
+/////VVVVV Need to FIX VVVV
+
+d3.select("#pathHider")
+  .on("click", function(){
+  d3.select("#pathHider").attr("id", "pathReveal")
+  d3.selectAll("ellipse")
+		.transition()
+		.duration(5000)
+  .attr("rx", 0)
+  .attr("ry", 0);
+  });
+
+d3.select("#pathReveal")
+  .on("click", function(){
+  d3.select("#pathReveal").attr("id", "pathHider")
+  d3.selectAll("ellipse")
+		.transition()
+		.duration(5000)
+  .attr("rx", function(d) {return rxScale(d.semimajorA);})
+	.attr("ry", function(d) {return ryScale(d.semiminorA);});
+  });
+///// ^^^^ Need to FIX ^^^^^
 	geoG.append("line")
 		.attr("x1", function(d) {return reversecenterScale(d.Efromcenter);}) 
 		//.attr("y1", 500/300)
@@ -114,10 +300,41 @@ function viz(incomingData){
 		.duration(5000)
 		.attr("cx", function(d) {return cartxScale(d.cartX);})
 		.attr("cy", function(d) {return cartyScale(d.cartY);})
+		//.attr("cx", function(d) {
+    //
+    //return coordxScale(d.cartesianX);})
+		//.attr("cy", function(d) {
+    //
+    //return coordyScale(d.cartesianY);})
 		.attr("r", 1)//function(d) {return d.inclination;})
 		.style("stroke", "white")
 		.style("fill", "none")
     .style("stroke-width", "0.25px");
+
+  //for(var i = 0; i<satMatrix.cartesianX.length; i++){
+  //if(i == satMatrix.cartesianX.length){
+    //i = 0;
+    //}
+		//d3.selectAll("g.satellites").select("circle").transition().duration(1000)
+    //.data(satMatrix)
+    //.attr("cx", function(d,i) {return coordxScale(d.cartesianX[i]);})
+    //.attr("cy", function(d,i) {return coordyScale(d.cartesianY[i]);});
+  //}
+//function update(datax, datay){
+//
+// var animate = geoG.selectAll("circle") 
+//    .data(datax, function(d) {return d});
+//
+//    animate.attr("cx", function(d,i,j) {return coordxScale(j);})
+//
+//    var animate = geoG.selectAll("circle")
+//    .data(datay, function(d) {return d});
+//
+//    animate.attr("cy", function(d,i,j) {return coordyScale(j);})
+//}
+
+//update(satMatrix.cartesianX, satMatrix.cartesianY)
+
 	/*
 		 var projection = d3.geo.orthographic()
 		 .translate([width/2, height/2])
@@ -235,4 +452,28 @@ function viz(incomingData){
 	//}
 
 
+
+
+//d3.json("orbitalCoords.json", function(coords) {animate(coords);})
+//
+//function animate(incomingCoords){
+//
+//
+//	var coordxmin = d3.min(incomingCoords, function(el) {return el.Xcoords;});
+//	var coordxmax = d3.max(incomingCoords, function(el) {return el.Xcoords;});
+//
+//	var coordymin = d3.min(incomingCoords, function(el) {return el.Ycoords;});
+//	var coordymax = d3.max(incomingCoords, function(el) {return el.Ycoords;});
+//
+//	var coordxScale = d3.scale.linear().domain([coordxmin, coordxmax]).range([coordxmin/300,coordxmax/300]);
+//	var coordyScale = d3.scale.linear().domain([coordymin, coordymax]).range([coordymin/300,coordymax/300]);
+//
+//  d3.select("svg")
+//  d3.selectAll("g.satellites")
+//    .data(incomingCoords)
+//    .selectAll("circle")
+//    .attr("cx", function(d,i) {return coordxScale(d.Xcoord);})
+//    .attr("cy", function(d,i) {return coordyScale(d.Ycoord);})
+//
+//  }
 }

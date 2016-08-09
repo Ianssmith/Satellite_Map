@@ -84,10 +84,13 @@ satMatrix.trueAnom = [];
 satMatrix.adjustedAnom = [];
 satMatrix.cartesianX = [];
 satMatrix.cartesianY = [];
+incomingData.degrees = [];
 
 for(var i=1;i<=360;i++){
 	satMatrix.degrees.push(i);
+	incomingData.degrees.push(i);
 };
+console.log(incomingData.degrees);
 //console.log(satellites.degrees);
 
 satMatrix.satOrbits = []

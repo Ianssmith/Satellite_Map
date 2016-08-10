@@ -58,6 +58,9 @@ function viz(incomingData){
 
 ////// CALCULATING ORBITAL PATHS vVVV
 
+
+
+
 var satMatrix = {
   sec_per_longdegree: [],
   meanmotion: [],
@@ -75,7 +78,6 @@ incomingData.map(function(d){
   });
 
 
-
 satMatrix.degrees = [];
 satMatrix.timeTillX = [];
 satMatrix.meanAnom = [];
@@ -84,18 +86,30 @@ satMatrix.trueAnom = [];
 satMatrix.adjustedAnom = [];
 satMatrix.cartesianX = [];
 satMatrix.cartesianY = [];
-incomingData.degrees = [];
 
-for(var i=1;i<=360;i++){
-	satMatrix.degrees.push(i);
-	incomingData.degrees.push(i);
+//incomingData.degrees = [];
+//incomingData.timeTillX = [];
+//incomingData.meanAnom = [];
+//incomingData.eccentricAnom = [];
+//incomingData.trueAnom = [];
+//incomingData.adjustedAnom = [];
+//incomingData.cartesianX = [];
+//incomingData.cartesianY = [];
+//incomingData.degrees = [];
+
+
+	for(var j=1;j<=360;j++){
+//	incomingData.degrees.push(j);
+	satMatrix.degrees.push(j);
 };
-console.log(incomingData.degrees);
+//console.log(incomingData);
 //console.log(satellites.degrees);
+
 
 satMatrix.satOrbits = []
 
 for(var i=0;i<=1380;i++){
+
 	satMatrix.satOrbits.push(satMatrix.degrees);
 }
 
@@ -207,7 +221,43 @@ satMatrix.cartesianY.shift();
 console.log(satMatrix.cartesianX);
 console.log(satMatrix.cartesianY);
 
+//incomingData.forEach(function(d){
+//satMatrix.adjustedAnom.forEach(function(satellite){
+//console.log(satellite)
+//});
+//	for(var j=0;j<=360;j++){
+//		var x = "x" + j;
+//		var y = "y" + j;
+//		d[x] = 0;//Math.cos(satellite[j])*d.semimajorA[j]; 
+//		d[y] = 0;//Math.sin(satellite[j])*d.semiminorA[j];
+//	
+//	}
+//});
 
+
+
+		//d[x] = j*d.sec_per_longdegree[j];
+		//d[y] = j*d.sec_per_longdegree[j];
+		//
+		//d[x] = d[x]*d.meanmotion[j];
+		//d[x] = d[x] - ((d[x]-(d.eccentricity[j]*Math.sin(d[x]))-d[x])/(1-d.eccentricity[j]*Math.cos(d[x])));
+		//d[x] = Math.acos((Math.cos(d[x])-d.eccentricity[j])/(1 - (d.eccentricity[j]*Math.cos(d[x])))); 
+		//d[x] = d[x]*2;
+		//d[y] = Math.sin(d[x])*d.semiminorA[j];
+		//d[x] = Math.cos(d[x])*d.semimajorA[j];
+
+//push(degree*satMatrix.sec_per_longdegree[i]);
+//push(degree*satMatrix.meanmotion[i]);
+//push(mA - ((mA-(satMatrix.eccentricity[i]*Math.sin(mA))-mA)/(1-satMatrix.eccentricity[i]*Math.cos(mA))));
+//push(Math.acos((Math.cos(eA)-satMatrix.eccentricity[i])/(1 - (satMatrix.eccentricity[i]*Math.cos(eA)))));
+//push(degree*2);
+//push(Math.cos(tA)*satMatrix.semimajorA[i]);
+//push(Math.sin(tA)*satMatrix.semiminorA[i]);
+
+//incomingData.forEach(function(d){
+//console.log(d.x2);
+//console.log(d.y2);
+//});
 	var coordxmin = d3.min(satMatrix, function(el) {return el.cartesianX;});
 	var coordxmax = d3.max(satMatrix, function(el) {return el.cartesianX;});
 
@@ -311,6 +361,41 @@ d3.select("#pathReveal")
 		.style("fill", "none")
     .style("stroke-width", "0.25px");
 
+/////trying to animatevvvvvv
+
+for(var i=0;i<360;i++){
+	var x = i + "x"
+	var y = i + "y"
+	d3.selectAll("g")
+		.data(satMatrix)
+		.enter()
+		.append("circle")
+		.attr("cx", function(d) {return cartxScale(d.cartX);}) 
+		//  .attr("cy", 500/300)
+		//  .attr("cx", 0)
+		.attr("cy", function(d) {return cartyScale(d.cartY);})
+    .style("stroke","white")
+    .style("fill","white")
+		.transition()
+		.delay(function(d,i) {return yearScale(d.launch_year)})
+		.duration(function(d,i) {return (d.sec_per_longdegree)})
+		.attr("cx", function(d) {return coordxScale(d.cartesianX);})
+		.attr("cy", function(d) {return coordyScale(d.cartesianY);})
+		//.attr("cx", function(d) {
+    //
+    //return coordxScale(d.cartesianX);})
+		//.attr("cy", function(d) {
+    //
+    //return coordyScale(d.cartesianY);})
+		.attr("r", 1)//function(d) {return d.inclination;})
+		.style("stroke", "white")
+		.style("fill", "none")
+    .style("stroke-width", "0.25px");
+}
+
+
+//////^^^^ trying to animate
+
   //for(var i = 0; i<satMatrix.cartesianX.length; i++){
   //if(i == satMatrix.cartesianX.length){
     //i = 0;
@@ -386,6 +471,18 @@ d3.select("#pathReveal")
 			});
 
 	///^^^
+
+d3.select("svg")
+	.data(incomingData)
+	.enter()
+	.append("text")
+	.text(function(d) {return d.launch_year;})
+	.attr("x", width/2)
+	.attr("y", height/4)
+	.style("font-family", "Roboto Mono")
+	.style("font-size", "40px")
+	.style("fill", "white");
+	
 
 	d3.select("svg")
 		.append("ellipse")

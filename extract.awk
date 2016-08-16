@@ -4,6 +4,6 @@
 #$37 semimajorA
 #$14 eccentricity
 #$41 meanmotion
-BEGIN{FS=","}
+BEGIN{FS=OFS=","}
 
   {print $2, $45, $40, $41, $37, $14} 

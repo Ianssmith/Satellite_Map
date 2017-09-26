@@ -13,6 +13,7 @@ d3.csv("GEO.csv", function(data) {viz(data);})
 
 
 function viz(incomingData){
+	console.log(incomingData);
 
 //var orbitData = 
 
@@ -126,15 +127,84 @@ function viz(incomingData){
     .style("stroke-width", "0.25px");
 
 
+var velocity = 0.001;
+var time = Date.now();
 
-	var earth = d3.select("svg")
-		.append("ellipse")
-		.attr("rx", earthradE)
-		.attr("ry", earthradN)
-		.attr("cx", width/2)
-		.attr("cy", height/2)
-		.style("fill", "lightblue")
-		.style("stroke", "green")
+	var projection = d3.geo.orthographic()
+		.scale(earthradE - 2)
+		.translate([width/2, height/2])
+		.clipAngle(90)
+		//.precision(0.1);
+		.rotate([10,0,0]);
+
+
+	//var canvas = d3.select("svg").append("canvas")
+		//.attr("width", width)
+		//.attr("height", height);
+	//console.info(d3.select("svg"));
+	var path = d3.geo.path()
+		.projection(projection);
+
+	var graticule = d3.geo.graticule();
+
+	d3.select("svg")
+		.append("defs").append("path")
+		.datum({type: "Sphere"})
+		.attr("id", "sphere")
+		.attr("d",path);
+
+	d3.select("svg")
+		.append("use")
+		.attr("class", "stroke")
+		.attr("xlink:href", "#sphere");
+
+	d3.select("svg")
+		.append("use")
+		.attr("class", "fill")
+		.attr("xlink:href", "#sphere");
+
+	d3.select("svg")
+		.append("path")
+		.datum(graticule)
+		.attr("class", "graticule")
+		.attr("d", path);
+
+	d3.select("svg")
+	
+
+	d3.json("world-50m.json", function(error, world) {
+		if(error) throw error;
+
+		d3.select("svg")
+			.insert("path", ".graticule")
+			.datum(topojson.feature(world, world.objects.land))
+			.attr("class", "land")
+			.attr("d", path)
+
+		d3.select("svg")
+			.insert("path", ".graticule")
+			.datum(topojson.mesh(world, world.objects.countries, function (a,b){return a!==b;}))
+			.attr("class", "boundary")
+			.attr("d", path);
+
+
+			});
+		d3.timer(function(){
+			var dt = Date.now() - time;
+			projection.rotate([velocity*dt,-90])
+			//projection.rotate([velocity*dt]);
+			//projection.rotate([velocity*dt,-velocity*dt]);
+			d3.select("svg").selectAll("path").attr("d",path);
+		})
+
+	//var earth = d3.select("svg")
+	//	.append("ellipse")
+	//	.attr("rx", earthradE)
+	//	.attr("ry", earthradN)
+	//	.attr("cx", width/2)
+	//	.attr("cy", height/2)
+	//	.style("fill", "lightblue")
+	//	.style("stroke", "green")
 
 		//d3.select("svg")
 		//.append("line")

@@ -114,19 +114,80 @@ function viz(incomingData){
     .style("stroke-width", "0.25px");
 
 
+	var projection = d3.geo.orthographic()
+		.scale(earthradE - 2)
+		.translate([width/2, height/2])
+		.clipAngle(90)
+		//.precision(0.1);
+		.rotate([10,0,0]);
+
+
+	//var canvas = d3.select("svg").append("canvas")
+		//.attr("width", width)
+		//.attr("height", height);
+	//console.info(d3.select("svg"));
+	var path = d3.geo.path()
+		.projection(projection);
+
+	var graticule = d3.geo.graticule();
+
 	d3.select("svg")
-		.append("ellipse")
-		.attr("rx", earthradE)
-		.attr("ry", earthradN)
-		.attr("cx", width/2)
-		.attr("cy", height/2)
-		.style("fill", "lightblue")
-		.style("stroke", "green")
+		.append("defs").append("path")
+		.datum({type: "Sphere"})
+		.attr("id", "sphere")
+		.attr("d",path);
+
+	d3.select("svg")
+		.append("use")
+		.attr("class", "stroke")
+		.attr("xlink:href", "#sphere");
+
+	d3.select("svg")
+		.append("use")
+		.attr("class", "fill")
+		.attr("xlink:href", "#sphere");
+
+	d3.select("svg")
+		.append("path")
+		.datum(graticule)
+		.attr("class", "graticule")
+		.attr("d", path);
+
+	d3.select("svg")
+	
+
+	d3.json("world-50m.json", function(error, world) {
+		if(error) throw error;
+
+		d3.select("svg")
+			.insert("path", ".graticule")
+			.datum(topojson.feature(world, world.objects.land))
+			.attr("class", "land")
+			.attr("d", path)
+
+		d3.select("svg")
+			.insert("path", ".graticule")
+			.datum(topojson.mesh(world, world.objects.countries, function (a,b){return a!==b;}))
+			.attr("class", "boundary")
+			.attr("d", path);
+
+
+			});
+
+	//d3.select("svg")
+		//.append("ellipse")
+		//.attr("rx", earthradE)
+		//.attr("ry", earthradN)
+		//.attr("cx", width/2)
+		//.attr("cy", height/2)
+		//.style("fill", "lightblue")
+		//.style("stroke", "green")
 
 		//geoG.append("text")
-		//  .text(function(d) {return d.country + "-" + d.name;})
-		//  .attr("y", function(d) {return ryScale(d.cartY);})
-		//  .attr("x", function(d) {return rxScale(d.cartX);})
+		  //.text(function(d) {return d.country + "-" + d.name;})
+		  //.attr("fill", "white")
+		  //.attr("y", function(d) {return ryScale(d.cartY);})
+		  //.attr("x", function(d) {return rxScale(d.cartX);})
 
 		var dataKeys = d3.keys(incomingData[0]).filter(function(el){
 				return el == "power_watts" || el == "inclination";

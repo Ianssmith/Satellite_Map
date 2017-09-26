@@ -9,10 +9,37 @@
 <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 </head>
 <style>
+.stroke {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3px;
+}
+
+.fill {
+  fill: lightblue;
+}
+
+.graticule {
+  fill: none;
+  stroke: #777;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+}
+
+.land {
+  fill: green;
+}
+
+.boundary {
+  fill: none;
+  stroke: #fff;
+  stroke-width: .5px;
+}
 #vizcontainer {
 }
 </style>
 <body>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
 <h1>Medium Earth Orbit</h1>
 <p>This orbit is defined as the space between Geosynchronous orbit and Low earth orbit. Highly eccentric and other less common types of orbit, such as cislunar are also included in this display.</p> 
 <ul>

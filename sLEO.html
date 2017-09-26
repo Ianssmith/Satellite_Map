@@ -10,10 +10,38 @@
 <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 </head>
 <style>
+
+.stroke {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3px;
+}
+
+.fill {
+  fill: lightblue;
+}
+
+.graticule {
+  fill: none;
+  stroke: #777;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+}
+
+.land {
+  fill: green;
+}
+
+.boundary {
+  fill: none;
+  stroke: #fff;
+  stroke-width: .5px;
+}
 #vizcontainer {
 }
 </style>
 <body>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
 <h1>Low-Earth Orbit: <span style="font-size:24px">Sun-synchronous</span> </h1>
 <p> synchronous orbits have been seperated from the other types of orbit in the LEO class of orbit because of their uniqueness and prevalence; These orbits slice vertically down the Earth from north to south all within 4 degrees of inclination.</p> 
 <ul>

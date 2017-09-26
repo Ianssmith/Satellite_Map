@@ -113,13 +113,15 @@ function viz(incomingData){
 		.style("fill", "none")
     .style("stroke-width", "0.25px");
 
+var velocity = 0.001;
+var time = Date.now();
 
 	var projection = d3.geo.orthographic()
 		.scale(earthradE - 2)
 		.translate([width/2, height/2])
 		.clipAngle(90)
-		//.precision(0.1);
-		.rotate([10,0,0]);
+		.precision(0.3)
+		//.rotate([100]);
 
 
 	//var canvas = d3.select("svg").append("canvas")
@@ -140,7 +142,8 @@ function viz(incomingData){
 	d3.select("svg")
 		.append("use")
 		.attr("class", "stroke")
-		.attr("xlink:href", "#sphere");
+		.attr("xlink:href", "#sphere")
+		//.style("stroke-width", "0.25px");
 
 	d3.select("svg")
 		.append("use")
@@ -153,7 +156,7 @@ function viz(incomingData){
 		.attr("class", "graticule")
 		.attr("d", path);
 
-	d3.select("svg")
+	//d3.select("svg")
 	
 
 	d3.json("world-50m.json", function(error, world) {
@@ -173,6 +176,14 @@ function viz(incomingData){
 
 
 			});
+
+		d3.timer(function(){
+			var dt = Date.now() - time;
+			projection.rotate([velocity*dt]);
+			//projection.rotate([velocity*dt,-velocity*dt]);
+			d3.select("svg").selectAll("path").attr("d",path);
+		})
+
 
 	//d3.select("svg")
 		//.append("ellipse")

@@ -201,6 +201,14 @@ satMatrix.cartesianX.shift();
 satMatrix.cartesianY.shift();
 
 
+for(var z=0;z<incomingData.length;z++){
+	if(z<=1375){
+		incomingData[z].xcarts = satMatrix.cartesianX[z]
+		incomingData[z].ycarts = satMatrix.cartesianY[z]
+	
+	}
+}
+console.log(incomingData)
 console.log(satMatrix.cartesianX);
 console.log(satMatrix.cartesianY);
 
@@ -306,16 +314,40 @@ d3.select("#pathReveal")
 		.attr("r", 1)//function(d) {return d.inclination;})
 		.style("stroke", "white")
 		.style("fill", "none")
-    .style("stroke-width", "0.25px");
+    .style("stroke-width", "0.25px")
+
+
+
+	//for(var k = 0; k<satMatrix.cartesianX.length[0]; k++){
+	//geoG.selectAll("circle")
+	//	.each(//anim(coordxScale(satMatrix.cartesianX[i][k]), coordyScale(satMatrix.cartesianY[i][k])))
+	//		function(el,i){
+	//			//d3.select(this)
+	//				//.transition().duration(50)
+	//				//.attr("cx",coordxScale(satMatrix.cartesianX[i][k]))
+	//				//.attr("cy",coordyScale(satMatrix.cartesianY[i][k]))
+	//			console.log(satMatrix.cartesianX[i][k])
+	//		})
+
+	//}
+		//.each(function(el, i){
+			//console.log(el);
+			//console.log(this)
+				//console.log(satMatrix.cartesianX[i][k])
+				//d3.select(this).call(anim, coordxScale(satMatrix.cartesianX[i][k]), coordyScale(satMatrix.cartesianY[i][k]))
+				//d3.select(this).transition().call(anim,coordxScale(satMatrix.cartesianX[i][k]), coordyScale(satMatrix.cartesianY[i][k]))
+			//}
+		//})
+
 
   //for(var i = 0; i<satMatrix.cartesianX.length; i++){
   //if(i == satMatrix.cartesianX.length){
-    //i = 0;
-    //}
-		//d3.selectAll("g.satellites").select("circle").transition().duration(1000)
-    //.data(satMatrix)
-    //.attr("cx", function(d,i) {return coordxScale(d.cartesianX[i]);})
-    //.attr("cy", function(d,i) {return coordyScale(d.cartesianY[i]);});
+  //  i = 0;
+  //  }
+  //  	d3.selectAll("g.satellites").select("circle").transition().duration(1000)
+  //  .data(satMatrix)
+  //  .attr("cx", function(d,i) {return coordxScale(d.cartesianX[i]);})
+  //  .attr("cy", function(d,i) {return coordyScale(d.cartesianY[i]);});
   //}
 //function update(datax, datay){
 //
@@ -329,7 +361,7 @@ d3.select("#pathReveal")
 //
 //    animate.attr("cy", function(d,i,j) {return coordyScale(j);})
 //}
-
+//
 //update(satMatrix.cartesianX, satMatrix.cartesianY)
 
 	/*
@@ -354,6 +386,8 @@ d3.select("#pathReveal")
 		 .attr("d", earth);
 	 */
 
+var velocity = 0.001;
+var time = Date.now();
 
 	var projection = d3.geo.orthographic()
 		.scale(earthradE - 2)
@@ -414,6 +448,13 @@ d3.select("#pathReveal")
 
 
 			});
+		d3.timer(function(){
+			var dt = Date.now() - time;
+			projection.rotate([velocity*dt,-90])
+			//projection.rotate([velocity*dt]);
+			//projection.rotate([velocity*dt,-velocity*dt]);
+			d3.select("svg").selectAll("path").attr("d",path);
+		})
 
 
 	//d3.select("svg")

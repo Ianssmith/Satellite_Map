@@ -13,6 +13,7 @@ d3.csv("GEO.csv", function(data) {viz(data);})
 
 
 function viz(incomingData){
+	console.log(incomingData);
 
 //var orbitData = 
 
@@ -126,6 +127,8 @@ function viz(incomingData){
     .style("stroke-width", "0.25px");
 
 
+var velocity = 0.001;
+var time = Date.now();
 
 	var projection = d3.geo.orthographic()
 		.scale(earthradE - 2)
@@ -186,6 +189,13 @@ function viz(incomingData){
 
 
 			});
+		d3.timer(function(){
+			var dt = Date.now() - time;
+			projection.rotate([velocity*dt,-90])
+			//projection.rotate([velocity*dt]);
+			//projection.rotate([velocity*dt,-velocity*dt]);
+			d3.select("svg").selectAll("path").attr("d",path);
+		})
 
 	//var earth = d3.select("svg")
 	//	.append("ellipse")

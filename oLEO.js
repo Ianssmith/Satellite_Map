@@ -113,13 +113,15 @@ function viz(incomingData){
 		.style("fill", "none")
     .style("stroke-width", "0.25px");
 
+var velocity = 0.001;
+var time = Date.now();
 
 	var projection = d3.geo.orthographic()
 		.scale(earthradE - 2)
 		.translate([width/2, height/2])
-		.clipAngle(90)
-		//.precision(0.1);
-		.rotate([10,0,0]);
+		.clipAngle(90+1e-6)
+		.precision(0.3)
+		.rotate([100,0,0]);
 
 
 	//var canvas = d3.select("svg").append("canvas")
@@ -173,6 +175,13 @@ function viz(incomingData){
 
 
 			});
+		d3.timer(function(){
+			var dt = Date.now() - time;
+			//projection.rotate([velocity*dt]);
+			//projection.rotate([velocity*dt,-velocity*dt]);
+			projection.rotate([velocity*dt,-90])
+			d3.select("svg").selectAll("path").attr("d",path);
+		})
 
 	//d3.select("svg")
 		//.append("ellipse")

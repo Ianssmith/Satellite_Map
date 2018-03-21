@@ -3,6 +3,7 @@ var height = 1000;
 var margin = 50;
 var fullangle = 2*Math.PI;
 
+var yeardata = [];
 
 d3.csv("MEO_Elliptical.csv", function(data) {viz(data);})
 
@@ -38,6 +39,10 @@ function viz(incomingData){
 	var earliest = d3.min(incomingData, function(el) {return el.launch_year;});
 	var latest = d3.max(incomingData, function(el) {return el.launch_year;});
 
+	for(i = earliest;i<=latest;i++){
+		yeardata.push(i);
+	}
+
 	var earthradE = 6371/300
 		var earthradN = 6357/300 
 
@@ -68,6 +73,38 @@ function viz(incomingData){
 
 	var geoG = d3.selectAll("g.satellites");
 
+	function showyears(y){
+			d3.select('#year')
+			//.data(yeardata)
+			.style("position","fixed")
+			//.style("height","300px")
+			//.style("top","0")
+			//.style("left","0")
+			//.style("right","0")
+			.style("z-index","1")
+			.style("color", "#fff")
+			.style("font-size","26px")
+			.style("width","100%")
+			//.style("margin","auto")
+			//.style("margin-top","100px")
+			.style("text-align","center")
+			.transition()
+			//.delay(function(d,i) {return yearScale(d.launch_year)})
+			//.delay(function(d,i) {return i*1000})
+			//.delay(1000)
+			.text("Year: "+y);
+			//.text(function(d,i){return "Year: "+d});
+
+			
+		
+	}
+
+	setInterval(function(){
+		if(yeardata.length >=1){
+			showyears(yeardata[0]);
+			yeardata.shift();
+		}
+	},1000);
 	geoG.append("ellipse")
 		.attr("rx", 0)
 		.attr("ry", 0)

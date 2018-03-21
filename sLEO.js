@@ -2,12 +2,18 @@ var width = 1400;
 var height = 1000;
 var margin = 50;
 var fullangle = 2*Math.PI;
+var yeardata = [];
 
 
 d3.csv("LEO_sun.csv", function(data) {viz(data);})
 
 
 function viz(incomingData){
+	//var lyears = [];
+	//for(var i=0;i<incomingData.length;i++){
+	//	lyears.push(incomingData[i].launch_year);
+	//}
+	//console.log(lyears.sort());
 
 
 	var maxInclination = d3.max(incomingData, function(el) {return el.inclination;});
@@ -34,7 +40,12 @@ function viz(incomingData){
 	var maxefromcenter = d3.max(incomingData, function(el) {return el.Efromcenter;});
 
 	var earliest = d3.min(incomingData, function(el) {return el.launch_year;});
+	//var earliest = 1974;
 	var latest = d3.max(incomingData, function(el) {return el.launch_year;});
+
+	for(i = earliest;i<=latest;i++){
+		yeardata.push(i);
+	}
 
 	var earthradE = 6371/25
 		var earthradN = 6357/25 
@@ -49,7 +60,7 @@ function viz(incomingData){
 	var ryScale = d3.scale.linear().domain([minsemiminorA, maxsemiminorA]).range([minsemiminorA/25, maxsemiminorA/25]);
 	var efromcenterScale = d3.scale.linear().domain([minefromcenter, maxefromcenter]).range([(width/2 - minefromcenter/25), width/2 - maxefromcenter/25]);
 	var reversecenterScale = d3.scale.linear().domain([minefromcenter, maxefromcenter]).range([(minefromcenter/300), maxefromcenter/300]);
-	var yearScale = d3.scale.linear().domain([earliest, latest]).range([0,41000]);
+	var yearScale = d3.scale.linear().domain([earliest, latest]).range([0,(latest-earliest)*1000]);
 
 	var cartxScale = d3.scale.linear().domain([rxmin, rxmax]).range([rxmin/25,rxmax/25]);
 	var cartyScale = d3.scale.linear().domain([rymin, rymax]).range([rymin/25,rymax/25]);
@@ -66,6 +77,39 @@ function viz(incomingData){
 
 
 	var geoG = d3.selectAll("g.satellites");
+
+	function showyears(y){
+			d3.select('#year')
+			//.data(yeardata)
+			.style("position","fixed")
+			//.style("height","300px")
+			//.style("top","0")
+			//.style("left","0")
+			//.style("right","0")
+			.style("z-index","1")
+			.style("color", "#fff")
+			.style("font-size","26px")
+			.style("width","100%")
+			//.style("margin","auto")
+			//.style("margin-top","100px")
+			.style("text-align","center")
+			.transition()
+			//.delay(function(d,i) {return yearScale(d.launch_year)})
+			//.delay(function(d,i) {return i*1000})
+			//.delay(1000)
+			.text("Year: "+y);
+			//.text(function(d,i){return "Year: "+d});
+
+			
+		
+	}
+
+	setInterval(function(){
+		if(yeardata.length >=1){
+			showyears(yeardata[0]);
+			yeardata.shift();
+		}
+	},1000);
 
 	geoG.append("ellipse")
 		.attr("rx", 0)

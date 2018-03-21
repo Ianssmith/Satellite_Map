@@ -39,6 +39,16 @@
 }
 #vizcontainer {
 }
+#year{
+	position: fixed;
+	z-index:1;
+	color: #fff;
+	font-size:26px;
+	width: 100%;
+	margin: auto;
+	margin-top:100px;
+	text-align: center;
+}
 </style>
 <body>
 <script src="https://d3js.org/topojson.v1.min.js"></script>
@@ -51,6 +61,7 @@
 <li><a href="oLEO.html">LEO </a></li>
 <li><a href="MEO.html">MEO and Elliptical</a></li>
 </ul>
+<div id="year">Year</div>
 <div id="vizcontainer">
 <svg style="width:1400px;height:1000px;" />
 </div>

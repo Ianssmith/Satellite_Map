@@ -3,17 +3,22 @@ var height = 1000;
 var margin = 50;
 var fullangle = 2*Math.PI;
 
-var years = [];
-for(i=1974;i<=2015;i++){
-	years.push(i);
-};
-console.log(years);
+var yeardata = [];
+//for(i=1974;i<=2017;i++){
+	//yeardata.push(i);
+//};
+//console.log(yeardata);
 
 d3.csv("GEO.csv", function(data) {viz(data);})
 
 
 function viz(incomingData){
-	console.log(incomingData);
+
+	//var yearArr = []
+	//for(i=0;i<incomingData.length;i++){
+		//yearArr.push(incomingData[i].launch_year);
+	//}
+	//console.log(yearArr.sort());
 
 //var orbitData = 
 
@@ -46,6 +51,10 @@ function viz(incomingData){
 	var earliest = d3.min(incomingData, function(el) {return el.launch_year;});
 	var latest = d3.max(incomingData, function(el) {return el.launch_year;});
 
+	for(i = earliest;i<=latest;i++){
+		yeardata.push(i);
+	}
+
 	var earthradE = 6371/100
 		var earthradN = 6357/100 
 
@@ -59,7 +68,7 @@ function viz(incomingData){
 	var ryScale = d3.scale.linear().domain([minsemiminorA, maxsemiminorA]).range([minsemiminorA/100, maxsemiminorA/100]);
 	var efromcenterScale = d3.scale.linear().domain([minefromcenter, maxefromcenter]).range([(width/2 - minefromcenter/100), width/2 - maxefromcenter/100]);
 	var reversecenterScale = d3.scale.linear().domain([minefromcenter, maxefromcenter]).range([(minefromcenter/100), maxefromcenter/100]);
-	var yearScale = d3.scale.linear().domain([earliest, latest]).range([0,41000]);
+	var yearScale = d3.scale.linear().domain([earliest, latest]).range([0,(latest-earliest)*1000]);
 	var cartxScale = d3.scale.linear().domain([rxmin, rxmax]).range([rxmin/100,rxmax/100]);
 	var cartyScale = d3.scale.linear().domain([rymin, rymax]).range([rymin/100,rymax/100]);
 
@@ -75,6 +84,53 @@ function viz(incomingData){
 
 
 	var geoG = d3.selectAll("g.satellites");
+
+
+		//geoG.select('div#year')
+		//d3.select('body').append('div')
+		/*
+		var years = d3.select('body')
+			.selectAll('div#year')
+			//.selectAll('div.year')
+			.data(yeardata)
+			.enter()
+			.append('div')
+			.attr("id", "years");
+			*/
+
+			//years//.append('div.year')
+	function showyears(y){
+			d3.select('#year')
+			//.data(yeardata)
+			.style("position","fixed")
+			//.style("height","300px")
+			//.style("top","0")
+			//.style("left","0")
+			//.style("right","0")
+			.style("z-index","1")
+			.style("color", "#fff")
+			.style("font-size","26px")
+			.style("width","100%")
+			//.style("margin","auto")
+			//.style("margin-top","100px")
+			.style("text-align","center")
+			.transition()
+			//.delay(function(d,i) {return yearScale(d.launch_year)})
+			//.delay(function(d,i) {return i*1000})
+			//.delay(1000)
+			.text("Year: "+y);
+			//.text(function(d,i){return "Year: "+d});
+
+			
+		
+	}
+
+	setInterval(function(){
+		if(yeardata.length >=1){
+			showyears(yeardata[0]);
+			yeardata.shift();
+		}
+	},1000);
 
 	geoG.append("ellipse")
 		.attr("rx", 0)
@@ -219,7 +275,10 @@ var time = Date.now();
 		//geoG.append("text")
 		//.attr("x", 475)
 		//.attr("y", 90)
-		//.text(function(d){return d.country + "-" + d.launch_year;})
+		//.style("fill","white")
+		//.transition()
+		//.delay(function(d,i) {return yearScale(d.launch_year)})
+		//.text(function(d){return d.country + "-" + d.launch_year;});
 
 		/*
 			 geoG.append("text")

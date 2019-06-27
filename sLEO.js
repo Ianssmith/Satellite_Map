@@ -15,6 +15,7 @@ function viz(incomingData){
 	//}
 	//console.log(lyears.sort());
 
+console.log(incomingData)
 
 	var maxInclination = d3.max(incomingData, function(el) {return el.inclination;});
 	var maxLongitude = d3.max(incomingData, function(el) {return el.longitude;});
@@ -114,7 +115,8 @@ function viz(incomingData){
 	geoG.append("ellipse")
 		.attr("rx", 0)
 		.attr("ry", 0)
-    .style("stroke", "white")
+		.style("stroke", "white")
+		.style("stroke-width", "0.5px")
 		.transition()
 		.delay(function(d,i) {return yearScale(d.launch_year)})
 		.duration(5000)
@@ -123,29 +125,31 @@ function viz(incomingData){
 		//.attr("cx", function(d) {return inclinationScale(d.inclination);})
 		//.attr("cy", function(d) {return longiScale(d.longitude);})
 		.style("fill", "none")//function(d) {return colorScale(d.inclination);})
-		.style("stroke", "#FE0000")
+		.style("stroke", "white")
 		.style("stroke-width", "0.25px")
-		.style("opacity", 0.5);
+		.style("opacity", 0.1);
 
 	geoG.append("line")
 		.attr("x1", function(d) {return reversecenterScale(d.Efromcenter);}) 
 		.attr("y1", 0)
 		.attr("x2", function(d) {return reversecenterScale(d.Efromcenter);}) 
 		.attr("y2", 500/25)
-    .style("stroke", "white")
+    .style("stroke", "red")
 		.transition()
 		.delay(function(d,i) {return yearScale(d.launch_year)})
 		.duration(5000)
 		.attr("x2", function(d) {return cartxScale(d.cartX);})
 		.attr("y2", function(d) {return cartyScale(d.cartY);})
-		.style("stroke", "#FE0000")
+		.style("stroke", "white")
+		//.style("stroke", "#FE0000")
 		.style("stroke-width", "0.5px")
-		.style("opacity", 0.5);
+		.style("opacity", 0.1);
 
 	geoG.append("circle")
 		.attr("cx", function(d) {return reversecenterScale(d.Efromcenter);}) 
 		.attr("cy", 0)
-    .style("stroke", "white")
+    //.style("stroke", "white")
+		.style("stroke", "white")
     .style("fill", "white")
 		.transition()
 		.delay(function(d,i) {return yearScale(d.launch_year)})
@@ -153,12 +157,15 @@ function viz(incomingData){
 		.attr("cx", function(d) {return cartxScale(d.cartX);})
 		.attr("cy", function(d) {return cartyScale(d.cartY);})
 		.attr("r", 1)//function(d) {return d.inclination;})
-		.style("stroke", "white")
+		//.style("stroke", "white")
+		.style("stroke", "#FE0000")
 		.style("fill", "none")
     .style("stroke-width", "0.25px");
 
 var velocity = 0.001;
 var time = Date.now();
+
+//geoG.selectAll("ellipse"
 
 	var projection = d3.geo.orthographic()
 		.scale(earthradE - 2)
@@ -269,6 +276,24 @@ var time = Date.now();
 				return radiusScale(d[datapoint]);
 				});
 	};
+
+			/*
+			var transform = d3.zoomIdentity//.translate(15,height/3).scale(26/96);
+		var zoom = d3.zoom()//.on("zoom",zoomed);;
+
+		svg.call(zoom.transform, transform);
+
+		svg.call(d3.zoom()
+			.on("zoom", zoomed)
+			.scaleExtent([1 / 4, 10]));
+
+		function zoomed() {
+			G.attr("transform", d3.event.transform);
+			//booktitles.attr("transform", d3.event.transform);
+			//books.attr("transform", d3.event.transform);
+			//versetracker.attr("transform", d3.event.transform);
+		}
+		*/
 
 	//d3.text("table.html", function(data) {
 	//		d3.select("body").append("div").attr("id", "table").html(data);

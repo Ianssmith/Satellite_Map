@@ -278,7 +278,8 @@ console.log(satMatrix.cartesianY);
 	geoG.append("ellipse")
 		.attr("rx", 0)
 		.attr("ry", 0)
-    .style("stroke", "white")
+		.style("stroke", "white")
+		.style("stroke-width", "0.5px")
 		.transition()
 		.delay(function(d,i) {return yearScale(d.launch_year)})
 		.duration(5000)
@@ -287,9 +288,9 @@ console.log(satMatrix.cartesianY);
 		//.attr("cx", function(d) {return inclinationScale(d.inclination);})
 		//.attr("cy", function(d) {return longiScale(d.longitude);})
 		.style("fill", "none")//function(d) {return colorScale(d.inclination);})
-		.style("stroke", "red")
+		.style("stroke", "white")
 		.style("stroke-width", "0.25px")
-		.style("opacity", 0.5);
+		.style("opacity", 0.1);
 
 /////VVVVV Need to FIX VVVV
 
@@ -320,22 +321,22 @@ d3.select("#pathReveal")
 		.attr("y1", 0)
 		.attr("x2", function(d) {return reversecenterScale(d.Efromcenter);}) 
 		.attr("y2", 500/300)
-    .style("stroke", "white")
+    .style("stroke", "#FE0000")
 		.transition()
 		.delay(function(d,i) {return yearScale(d.launch_year)})
 		.duration(5000)
 		.attr("x2", function(d) {return cartxScale(d.cartX);})
 		.attr("y2", function(d) {return cartyScale(d.cartY);})
-		.style("stroke", "red")
+		.style("stroke","white")
 		.style("stroke-width", "0.5px")
-		.style("opacity", 0.5);
+		.style("opacity", 0.1);
 
 	geoG.append("circle")
 		.attr("cx", function(d) {return reversecenterScale(d.Efromcenter);}) 
 		//  .attr("cy", 500/300)
 		//  .attr("cx", 0)
 		.attr("cy", 0)
-    .style("stroke","white")
+		.style("stroke", "white")
     .style("fill","white")
 		.transition()
 		.delay(function(d,i) {return yearScale(d.launch_year)})
@@ -349,7 +350,7 @@ d3.select("#pathReveal")
     //
     //return coordyScale(d.cartesianY);})
 		.attr("r", 1)//function(d) {return d.inclination;})
-		.style("stroke", "white")
+		.style("stroke", "#FE0000")
 		.style("fill", "none")
     .style("stroke-width", "0.25px")
 
